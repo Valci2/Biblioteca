@@ -1,0 +1,158 @@
+# ==========================================================
+# Docker Compose
+#
+# Perfis disponíveis:
+#   dev  -> Ambiente de desenvolvimento
+#   prod -> Ambiente de produção
+#
+# Exemplos:
+# docker compose --profile dev up --build
+# docker compose --profile prod up --build
+# ==========================================================
+
+services:
+
+  # ========================================================
+  # Banco de Dados
+  # ========================================================
+  postgres:
+
+    image: postgres:17-alpine
+
+    # Nome do container
+    container_name: postgres-db
+
+    # Reinicia automaticamente caso o container pare
+    restart: unless-stopped
+
+    # Variáveis de ambiente do PostgreSQL
+    env_file:
+      - ./backend/.env
+
+    # Disponibiliza a porta apenas para desenvolvimento.
+    # Em produção normalmente essa linha é removida.
+    ports:
+      - "5432:5432"
+
+    # Persistência dos dados
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Backend - Desenvolvimento
+  backend-dev:
+
+    profiles: ["dev"]
+
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: dev
+
+    container_name: spring-backend
+
+    restart: unless-stopped
+
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+
+    env_file:
+      - ./backend/.env
+
+    ports:
+      - "8080:8080"
+
+    # Compartilha o código com o container
+    # e mantém o cache do Maven
+    volumes:
+      - ./backend:/app
+      - maven_cache:/root/.m2
+
+    depends_on:
+      - postgres
+
+
+  # Backend - Produção
+  backend-prod:
+
+    profiles: ["prod"]
+
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: prod
+
+    container_name: spring-backend
+
+    restart: unless-stopped
+
+    env_file:
+      - ./backend/.env
+
+    # Disponível apenas para outros containers
+    expose:
+      - "8080"
+
+    depends_on:
+      - postgres
+
+
+  # Frontend - Desenvolvimento
+  frontend-dev:
+
+    profiles: ["dev"]
+
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: dev
+
+    container_name: react-frontend
+
+    restart: unless-stopped
+
+    env_file:
+      - ./frontend/.env
+
+    ports:
+      - "5173:5173"
+
+    # Hot Reload
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+    depends_on:
+      - backend-dev
+
+
+  # Frontend - Produção
+  frontend-prod:
+
+    profiles: ["prod"]
+
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: prod
+
+    container_name: react-frontend
+
+    restart: unless-stopped
+
+    ports:
+      - "80:80"
+
+    depends_on:
+      - backend-prod
+
+
+# Volumes (meio obvio hahahah)
+volumes:
+
+  # Dados persistentes do PostgreSQL
+  postgres_data:
+
+  # Cache das dependências do Maven
+  maven_cache:
