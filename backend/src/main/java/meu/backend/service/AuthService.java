@@ -8,7 +8,6 @@ import meu.backend.repository.UserRepository;
 
 @Service
 public class AuthService {
-    // Precisa de um Bean do BCryptPasswordEncoder configurado no projeto
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
