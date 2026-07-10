@@ -20,7 +20,7 @@ services:
     image: postgres:17-alpine
 
     # Nome do container
-    container_name: postgres-db
+    container_name: postgres
 
     # Reinicia automaticamente caso o container pare
     restart: unless-stopped
@@ -51,11 +51,6 @@ services:
     container_name: spring-backend
 
     restart: unless-stopped
-
-    environment:
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_DB=${DB_NAME}
 
     env_file:
       - ./backend/.env
