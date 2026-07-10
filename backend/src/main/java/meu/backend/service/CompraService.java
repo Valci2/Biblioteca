@@ -3,7 +3,6 @@ package meu.backend.service;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -15,8 +14,12 @@ import meu.backend.repository.CompraRepository;
 @Service
 public class CompraService {
     
-    @Autowired
-    private CompraRepository compraRepository;
+    private final CompraRepository compraRepository;
+
+    // Para detectar automaticamente que este é o construtor a ser usado
+    CompraService(CompraRepository compraRepository) {
+        this.compraRepository = compraRepository;
+    }
 
     @Transactional
     public Compra processarCompra(User user, Livro livro) {

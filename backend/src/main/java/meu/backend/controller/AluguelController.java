@@ -1,6 +1,5 @@
 package meu.backend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,12 +16,16 @@ import meu.backend.service.AluguelService;
 @RequestMapping("/api/rentals")
 public class AluguelController {
     
-    @Autowired
-    private AluguelService aluguelService;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private LivroRepository livroRepository;
+    private final AluguelService aluguelService;
+    private final UserRepository userRepository;
+    private final LivroRepository livroRepository;
+
+    // Para detectar automaticamente que este é o construtor a ser usado
+    AluguelController(AluguelService aluguelService, UserRepository userRepository, LivroRepository livroRepository) {
+        this.aluguelService = aluguelService;
+        this.userRepository = userRepository;
+        this.livroRepository = livroRepository;
+    }
 
     @PostMapping
     public Aluguel criarAluguel(@RequestParam Long userId, @RequestParam Long livroId) {

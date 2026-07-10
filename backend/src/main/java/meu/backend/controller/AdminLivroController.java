@@ -1,10 +1,8 @@
 package meu.backend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,10 +16,14 @@ import meu.backend.service.LivroService;
 @RequestMapping("/api/admin/books")
 public class AdminLivroController {
 
-    @Autowired
-    private LivroRepository livroRepository;
-    @Autowired
-    private LivroService livroService;
+    private final LivroRepository livroRepository;
+    private final LivroService livroService;
+
+    // Para detectar automaticamente que este é o construtor a ser usado
+    AdminLivroController(LivroRepository livroRepository, LivroService livroService) {
+        this.livroRepository = livroRepository;
+        this.livroService = livroService;
+    }
 
     // Registrar livro
     @PostMapping

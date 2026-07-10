@@ -3,7 +3,6 @@ package meu.backend.service;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -16,10 +15,14 @@ import meu.backend.repository.LivroRepository;
 @Service
 public class AluguelService {
 
-    @Autowired
-    private AluguelRepository aluguelRepository;
-    @Autowired
-    private LivroRepository livroRepository;
+    private final AluguelRepository aluguelRepository;
+    private final LivroRepository livroRepository;
+
+    // Para detectar automaticamente que este é o construtor a ser usado
+    AluguelService(AluguelRepository aluguelRepository, LivroRepository livroRepository) {
+        this.aluguelRepository = aluguelRepository;
+        this.livroRepository = livroRepository;
+    }
 
     @Transactional
     public Aluguel realizarAluguel(User user, Livro livro) {

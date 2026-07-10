@@ -2,7 +2,6 @@ package meu.backend.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,8 +13,12 @@ import meu.backend.repository.AluguelRepository;
 @RequestMapping("/api/admin/reports")
 public class AdminReportController {
 
-    @Autowired
-    private AluguelRepository aluguelRepository;
+    private final AluguelRepository aluguelRepository;
+
+    // Para detectar automaticamente que este é o construtor a ser usado
+    AdminReportController(AluguelRepository aluguelRepository) {
+        this.aluguelRepository = aluguelRepository;
+    }
 
     // Retornar o histórico completo
     @GetMapping("/rentals")

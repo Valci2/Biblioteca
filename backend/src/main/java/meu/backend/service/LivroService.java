@@ -1,6 +1,5 @@
 package meu.backend.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -11,10 +10,14 @@ import meu.backend.repository.LivroRepository;
 @Service
 public class LivroService {
 
-    @Autowired
-    private LivroRepository livroRepository;
-    @Autowired
-    private AluguelRepository aluguelRepository;
+    private final LivroRepository livroRepository;
+    private final AluguelRepository aluguelRepository;
+
+    // Para detectar automaticamente que este é o construtor a ser usado
+    LivroService(LivroRepository livroRepository, AluguelRepository aluguelRepository) {
+        this.livroRepository = livroRepository;
+        this.aluguelRepository = aluguelRepository;
+    }
 
     @Transactional
     public void adicionarEstoque(Long livroId, Integer quantidadeParaAdicionar) {

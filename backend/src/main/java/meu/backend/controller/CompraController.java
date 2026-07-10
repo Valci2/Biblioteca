@@ -1,6 +1,5 @@
 package meu.backend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,12 +16,16 @@ import meu.backend.service.CompraService;
 @RequestMapping("/api/purchases")
 public class CompraController {
 
-    @Autowired
-    private CompraService compraService;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private LivroRepository livroRepository;
+    private final CompraService compraService;
+    private final UserRepository userRepository;
+    private final LivroRepository livroRepository;
+
+    // Para detectar automaticamente que este é o construtor a ser usado
+    CompraController(CompraService compraService, UserRepository userRepository, LivroRepository livroRepository) {
+        this.compraService = compraService;
+        this.userRepository = userRepository;
+        this.livroRepository = livroRepository;
+    }
 
     @PostMapping
     public Compra realizarCompra(@RequestParam Long userId, @RequestParam Long livroId) {
