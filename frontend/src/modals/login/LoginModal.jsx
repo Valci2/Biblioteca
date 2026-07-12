@@ -1,13 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
+import LoginForm from './LoginForm';
 import './LoginModal.css';
 
-// IMPORTANTE: Configura o elemento root para acessibilidade
-if (typeof window !== 'undefined') {
-  Modal.setAppElement('#root');
-}
+// Configuração do Modal
+Modal.setAppElement('#root');
 
 const LoginModal = ({ isOpen, onClose }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // Previne scroll quando o modal está aberto
   useEffect(() => {
     if (isOpen) {
@@ -20,10 +21,23 @@ const LoginModal = ({ isOpen, onClose }) => {
     };
   }, [isOpen]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Login realizado!');
-    onClose();
+  const handleSubmit = async (data) => {
+    setIsSubmitting(true);
+    console.log('Dados do login:', data);
+    
+    try {
+      // Simula requisição à API
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      /* implementar a chamada para api mais tarde */
+      
+      // Fecha o modal após o login
+      onClose();
+    } catch (error) {
+      console.error('Erro no login:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -40,31 +54,15 @@ const LoginModal = ({ isOpen, onClose }) => {
         ✕
       </button>
       
-      <h1>🔐 Login</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Email</label>
-          <input 
-            type="email" 
-            placeholder="Digite seu email" 
-            required 
-            autoFocus
-          />
-        </div>
-        
-        <div className="form-group">
-          <label>Senha</label>
-          <input 
-            type="password" 
-            placeholder="Digite sua senha" 
-            required 
-          />
-        </div>
-        
-        <button type="submit" className="btn-login">
-          Entrar
-        </button>
-      </form>
+      <div className="modal-header">
+        <h1>🔐 Login</h1>
+        <p className="modal-subtitle">Faça login para acessar sua conta</p>
+      </div>
+      
+      <LoginForm 
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
+      />
     </Modal>
   );
 };

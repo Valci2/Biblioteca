@@ -18,8 +18,7 @@ const Navbar = () => {
         
         <div className="navbar-links">
           <Link to="/">Home</Link>
-          <Link to="/dashboard">Dashboard</Link>
-          {/* Botão que abre o modal em vez de link */}
+
           <button onClick={openModal} className="btn-login-nav">
             Login
           </button>

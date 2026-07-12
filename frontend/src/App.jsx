@@ -5,7 +5,7 @@ import AppRoutes from './routes/AppRoutes';
 function App() {
   return (
     <Router>
-      <div className="App">  {/* ← Adicione uma div wrapper */}
+      <div className="App">
         <Navbar />
         <div className="content" style={{ padding: '2rem' }}>
           <AppRoutes />
