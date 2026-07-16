@@ -3,9 +3,9 @@ import { useEffect, useState, useCallback } from 'react';
 import Modal from 'react-modal';
 import LoginForm from './LoginForm';
 import RegisterForm from '../register/RegisterForm';
+import { useAuth } from '../../context/AuthContext';
 import './LoginModal.css';
 
-// Configuração do Modal
 Modal.setAppElement('#root');
 
 const LoginModal = ({ 
@@ -14,17 +14,25 @@ const LoginModal = ({
   onLoginSuccess,
   onRegisterSuccess 
 }) => {
+  const { login, register, user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [mode, setMode] = useState('login'); // 'login' ou 'register'
+  const [mode, setMode] = useState('login');
   const [globalError, setGlobalError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
-  // Previne scroll quando o modal está aberto
+  useEffect(() => {
+    if (user && isOpen) {
+      onLoginSuccess?.(user);
+      onClose();
+    }
+  }, [user, isOpen, onClose, onLoginSuccess]);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      // Reset para o modo login quando o modal abre - CORRIGIDO
-      setMode('login'); // Antes estava setMode(true)
+      setMode('login');
       setGlobalError(null);
+      setSuccessMessage(null);
     } else {
       document.body.style.overflow = 'unset';
     }
@@ -36,17 +44,11 @@ const LoginModal = ({
   const handleLogin = useCallback(async (data) => {
     setIsSubmitting(true);
     setGlobalError(null);
+    setSuccessMessage(null);
     
     try {
-      // Simula requisição à API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      /* implementar a chamada para api mais tarde */
-      
-      // Chama o callback de sucesso
-      onLoginSuccess?.(data);
-      
-      // Fecha o modal após o login
+      const user = await login(data.email, data.password);
+      onLoginSuccess?.(user);
       onClose();
     } catch (error) {
       console.error('Erro no login:', error);
@@ -54,34 +56,41 @@ const LoginModal = ({
     } finally {
       setIsSubmitting(false);
     }
-  }, [onLoginSuccess, onClose]);
+  }, [login, onLoginSuccess, onClose]);
 
   const handleRegister = useCallback(async (data) => {
     setIsSubmitting(true);
     setGlobalError(null);
+    setSuccessMessage(null);
     
     try {
-      // Simula requisição à API
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Envia os dados para registro
+      const response = await register(data);
       
-      /* implementar a chamada para api mais tarde */
+      // Sucesso no registro - o backend retorna string
+      setSuccessMessage(response || '✅ Conta criada com sucesso! Faça login para continuar.');
       
-      // Chama o callback de sucesso
-      onRegisterSuccess?.(data);
+      // Chama callback de sucesso
+      onRegisterSuccess?.(response);
       
-      // Após o registro bem-sucedido, volta para o login
-      setMode('login');
+      // Volta para o login após 2 segundos
+      setTimeout(() => {
+        setMode('login');
+        setSuccessMessage(null);
+      }, 2000);
+      
     } catch (error) {
       console.error('Erro no registro:', error);
       setGlobalError(error.message || 'Erro ao fazer registro');
     } finally {
       setIsSubmitting(false);
     }
-  }, [onRegisterSuccess]);
+  }, [register, onRegisterSuccess]);
 
   const toggleMode = useCallback(() => {
     setMode(prev => prev === 'login' ? 'register' : 'login');
     setGlobalError(null);
+    setSuccessMessage(null);
     setIsSubmitting(false);
   }, []);
 
@@ -107,9 +116,7 @@ const LoginModal = ({
       </button>
       
       <div className="modal-header">
-        <h1>
-          {isLoginMode ? '🔐 Login' : '📝 Cadastro'}
-        </h1>
+        <h1>{isLoginMode ? '🔐 Login' : '📝 Cadastro'}</h1>
         <p className="modal-subtitle">
           {isLoginMode 
             ? 'Faça login para acessar sua conta' 
@@ -120,6 +127,12 @@ const LoginModal = ({
       {globalError && (
         <div className="error-banner" role="alert">
           {globalError}
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="success-banner" role="alert">
+          {successMessage}
         </div>
       )}
       
