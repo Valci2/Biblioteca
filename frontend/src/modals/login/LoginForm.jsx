@@ -1,6 +1,7 @@
 // src/modals/login/LoginForm.jsx
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { loginSchema } from './validation';
+import Input from '../../components/common/input/Input';
 
 const LoginForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
   const [formData, setFormData] = useState({
@@ -9,19 +10,22 @@ const LoginForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
   });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
+  const [isValid, setIsValid] = useState({});
 
-  const validateField = async (name, value) => {
+  const validateField = useCallback(async (name, value) => {
     try {
       await loginSchema.validateAt(name, { [name]: value });
       setErrors(prev => ({ ...prev, [name]: '' }));
+      setIsValid(prev => ({ ...prev, [name]: true }));
       return true;
     } catch (error) {
       setErrors(prev => ({ ...prev, [name]: error.message }));
+      setIsValid(prev => ({ ...prev, [name]: false }));
       return false;
     }
-  };
+  }, []);
 
-  const validateForm = async (data) => {
+  const validateForm = useCallback(async (data) => {
     try {
       await loginSchema.validate(data, { abortEarly: false });
       setErrors({});
@@ -34,27 +38,26 @@ const LoginForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
       setErrors(newErrors);
       return false;
     }
-  };
+  }, []);
 
-  const handleChange = async (e) => {
+  const handleChange = useCallback(async (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
     if (touched[name]) {
       await validateField(name, value);
     }
-  };
+  }, [touched, validateField]);
 
-  const handleBlur = async (e) => {
+  const handleBlur = useCallback(async (e) => {
     const { name, value } = e.target;
     setTouched(prev => ({ ...prev, [name]: true }));
     await validateField(name, value);
-  };
+  }, [validateField]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     
-    // Marca todos os campos como tocados
     const allTouched = Object.keys(formData).reduce((acc, key) => {
       acc[key] = true;
       return acc;
@@ -65,56 +68,67 @@ const LoginForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
     if (isValid) {
       await onSubmit(formData);
     }
-  };
-
-  const isSubmitting = externalSubmitting;
+  }, [formData, validateForm, onSubmit]);
 
   return (
     <form onSubmit={handleSubmit} className="login-form">
-      <div className="form-group">
-        <label htmlFor="email">Email</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          placeholder="seu@email.com"
-          disabled={isSubmitting}
-          className={touched.email && errors.email ? 'error' : ''}
-          required
-        />
-        {touched.email && errors.email && (
-          <span className="error-message">{errors.email}</span>
-        )}
-      </div>
+      <Input
+        label="Email"
+        name="email"
+        type="email"
+        value={formData.email}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        placeholder="seu@email.com"
+        error={errors.email}
+        touched={touched.email}
+        isValid={isValid.email}
+        disabled={externalSubmitting}
+        autoComplete="email"
+        required
+        size="md"
+        variant="default"
+        showValidationMessages={false}
+        showSuccessIcon={false}
+        showErrorIcon={false}
+      />
       
-      <div className="form-group">
-        <label htmlFor="password">Senha</label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          placeholder="Sua senha"
-          disabled={isSubmitting}
-          className={touched.password && errors.password ? 'error' : ''}
-          required
-        />
-        {touched.password && errors.password && (
-          <span className="error-message">{errors.password}</span>
-        )}
-      </div>
+      <Input
+        label="Senha"
+        name="password"
+        type="password"
+        value={formData.password}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        placeholder="Sua senha"
+        error={errors.password}
+        touched={touched.password}
+        isValid={isValid.password}
+        disabled={externalSubmitting}
+        autoComplete="current-password"
+        required
+        size="md"
+        variant="default"
+        showPasswordStrength={false}
+        passwordValue={formData.password}
+        showValidationMessages={false}
+        showSuccessIcon={false}
+        showErrorIcon={false}
+      />
 
       <button 
         type="submit" 
         className="submit-btn"
-        disabled={isSubmitting}
+        disabled={externalSubmitting}
       >
-        {isSubmitting ? 'Entrando...' : 'Entrar'}
+        {externalSubmitting ? (
+          <>
+            <span className="spinner"></span>
+            Entrando...
+          </>
+        ) : (
+          'Entrar'
+        )}
       </button>
     </form>
   );

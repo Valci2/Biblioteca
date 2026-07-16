@@ -1,4 +1,5 @@
-import * as yup from 'yup'
+// src/modals/register/validation.js
+import * as yup from 'yup';
 
 export const registerSchema = yup.object({
   name: yup
@@ -8,11 +9,11 @@ export const registerSchema = yup.object({
     .required('Nome é obrigatório'),
   email: yup
     .string()
-    .email('Email inválido')
+    .email('Digite um email válido')
     .required('Email é obrigatório'),
   password: yup
     .string()
-    .min(6, 'Senha deve ter pelo menos 6 caracteres')
+    .min(6, 'A senha deve ter pelo menos 6 caracteres')
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
       'Senha deve conter letras maiúsculas, minúsculas e números'
@@ -22,7 +23,7 @@ export const registerSchema = yup.object({
     .string()
     .oneOf([yup.ref('password')], 'As senhas não coincidem')
     .required('Confirmar senha é obrigatório')
-}).required();
+});
 
 
 

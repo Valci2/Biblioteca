@@ -1,0 +1,426 @@
+/* src/components/common/Input.css */
+/* ============================================
+   INPUT COMPONENT - Design System Unificado
+   ============================================ */
+
+/* ===== INPUT WRAPPER ===== */
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+/* ===== LABEL ===== */
+.input-label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.required-star {
+  color: #dc3545;
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+/* ===== INPUT CONTAINER ===== */
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #fafafa;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+  min-height: 48px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-container:hover:not(.disabled) {
+  border-color: #d1d5db;
+  background: #ffffff;
+}
+
+.input-container:focus-within {
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* ===== INPUT FIELD ===== */
+.input-field {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #1a1a1a;
+  font-family: inherit;
+  width: 100%;
+  min-width: 0;
+  padding: 12px 14px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.input-field::placeholder {
+  color: #aaa;
+  font-size: 14px;
+}
+
+.input-field:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== SIZES ===== */
+.input-sm .input-field {
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.input-sm {
+  min-height: 36px;
+}
+
+.input-md {
+  min-height: 48px;
+}
+
+.input-md .input-field {
+  padding: 12px 14px;
+  font-size: 15px;
+}
+
+.input-lg {
+  min-height: 56px;
+}
+
+.input-lg .input-field {
+  padding: 14px 18px;
+  font-size: 16px;
+}
+
+/* ===== VARIANTS ===== */
+.input-default {
+  background: #fafafa;
+}
+
+.input-filled {
+  background: #f3f4f6;
+  border-color: transparent;
+}
+
+.input-filled:hover:not(.disabled) {
+  background: #e5e7eb;
+}
+
+.input-filled:focus-within {
+  background: #ffffff;
+  border-color: #3b82f6;
+}
+
+.input-outline {
+  background: transparent;
+  border-color: #d1d5db;
+}
+
+.input-outline:hover:not(.disabled) {
+  background: #fafafa;
+}
+
+/* ===== STATES ===== */
+.input-container.error {
+  border-color: #dc3545;
+  background: #fffafa;
+}
+
+.input-container.error:hover {
+  border-color: #dc3545;
+}
+
+.input-container.error:focus-within {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+}
+
+.input-container.success {
+  border-color: #22c55e;
+  background: #fafffa;
+}
+
+.input-container.success:hover {
+  border-color: #22c55e;
+}
+
+.input-container.success:focus-within {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+}
+
+.input-container.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #f3f4f6;
+}
+
+/* ===== ICONS ===== */
+.input-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.input-icon-left {
+  padding-left: 14px;
+}
+
+.input-icon-right {
+  padding-right: 14px;
+}
+
+/* ===== TOGGLE PASSWORD ===== */
+.input-toggle-password {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px;
+  color: #888;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.input-toggle-password:hover {
+  color: #333;
+}
+
+/* ===== STATUS ICON ===== */
+.input-status-icon {
+  position: absolute;
+  right: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+/* Ajuste para quando tem ícone de status e toggle password juntos */
+.input-container.has-toggle .input-status-icon {
+  right: 48px;
+}
+
+.input-container.error .input-status-icon {
+  color: #dc3545;
+}
+
+.input-container.success .input-status-icon {
+  color: #22c55e;
+}
+
+/* ===== MESSAGES ===== */
+.input-error-message {
+  color: #dc3545;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  animation: slideDown 0.2s ease-out;
+  padding-top: 2px;
+}
+
+.input-error-message::before {
+  content: '✕';
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.input-success-message {
+  color: #22c55e;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  animation: slideDown 0.2s ease-out;
+  padding-top: 2px;
+}
+
+.input-success-message::before {
+  content: '✓';
+  font-weight: 700;
+}
+
+/* ===== PASSWORD STRENGTH ===== */
+.password-strength {
+  margin-top: 6px;
+}
+
+.strength-label {
+  font-size: 11px;
+  color: #888;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.strength-label strong {
+  font-weight: 600;
+}
+
+.strength-bar {
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.strength-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.strength-fill.weak {
+  background: linear-gradient(90deg, #ef4444, #f87171);
+}
+
+.strength-fill.medium {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.strength-fill.strong {
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+}
+
+/* ============================================
+   DARK MODE - Consistente com o Modal
+   ============================================ */
+@media (prefers-color-scheme: dark) {
+  .input-label {
+    color: #e5e7eb;
+  }
+
+  .input-container {
+    background: #374151;
+    border-color: #4b5563;
+  }
+
+  .input-container:hover:not(.disabled) {
+    background: #3d4a5c;
+    border-color: #6b7280;
+  }
+
+  .input-container:focus-within {
+    background: #3d4a5c;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+  }
+
+  .input-field {
+    color: #f9fafb;
+  }
+
+  .input-field::placeholder {
+    color: #6b7280;
+  }
+
+  .input-container.error {
+    border-color: #ef4444;
+    background: #2d1f1f;
+  }
+
+  .input-container.error:focus-within {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+  }
+
+  .input-container.success {
+    border-color: #22c55e;
+    background: #1a2d1a;
+  }
+
+  .input-container.success:focus-within {
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+  }
+
+  .input-error-message {
+    color: #fca5a5;
+  }
+
+  .input-success-message {
+    color: #86efac;
+  }
+
+  .strength-label {
+    color: #9ca3af;
+  }
+
+  .strength-bar {
+    background: #374151;
+  }
+
+  .input-toggle-password {
+    color: #9ca3af;
+  }
+
+  .input-toggle-password:hover {
+    color: #f9fafb;
+  }
+
+  .input-icon {
+    color: #9ca3af;
+  }
+
+  .input-filled {
+    background: #1f2937;
+  }
+
+  .input-filled:hover:not(.disabled) {
+    background: #374151;
+  }
+
+  .input-filled:focus-within {
+    background: #3d4a5c;
+  }
+
+  .input-outline {
+    background: transparent;
+    border-color: #4b5563;
+  }
+
+  .input-outline:hover:not(.disabled) {
+    background: #1f2937;
+  }
+
+  .input-container.disabled {
+    background: #1f2937;
+  }
+}
+
+/* ============================================
+   ANIMAÇÕES
+   ============================================ */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

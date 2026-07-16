@@ -1,7 +1,7 @@
 // src/modals/register/RegisterForm.jsx
-import { useState } from 'react';
-import * as yup from 'yup';
+import { useState, useCallback } from 'react';
 import { registerSchema } from './validation';
+import Input from '../../components/common/input/Input';
 
 const RegisterForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
   const [formData, setFormData] = useState({
@@ -12,19 +12,30 @@ const RegisterForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
   });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
+  const [isValid, setIsValid] = useState({});
 
-  const validateField = async (name, value) => {
+  const validateField = useCallback(async (name, value) => {
     try {
-      await registerSchema.validateAt(name, { [name]: value });
+      // Para confirmPassword, precisamos validar com o contexto completo
+      if (name === 'confirmPassword') {
+        await registerSchema.validateAt(name, { 
+          [name]: value,
+          password: formData.password 
+        });
+      } else {
+        await registerSchema.validateAt(name, { [name]: value });
+      }
       setErrors(prev => ({ ...prev, [name]: '' }));
+      setIsValid(prev => ({ ...prev, [name]: true }));
       return true;
     } catch (error) {
       setErrors(prev => ({ ...prev, [name]: error.message }));
+      setIsValid(prev => ({ ...prev, [name]: false }));
       return false;
     }
-  };
+  }, [formData.password]);
 
-  const validateForm = async (data) => {
+  const validateForm = useCallback(async (data) => {
     try {
       await registerSchema.validate(data, { abortEarly: false });
       setErrors({});
@@ -37,27 +48,26 @@ const RegisterForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
       setErrors(newErrors);
       return false;
     }
-  };
+  }, []);
 
-  const handleChange = async (e) => {
+  const handleChange = useCallback(async (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
     if (touched[name]) {
       await validateField(name, value);
     }
-  };
+  }, [touched, validateField]);
 
-  const handleBlur = async (e) => {
+  const handleBlur = useCallback(async (e) => {
     const { name, value } = e.target;
     setTouched(prev => ({ ...prev, [name]: true }));
     await validateField(name, value);
-  };
+  }, [validateField]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     
-    // Marca todos os campos como tocados
     const allTouched = Object.keys(formData).reduce((acc, key) => {
       acc[key] = true;
       return acc;
@@ -69,94 +79,111 @@ const RegisterForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
       const { confirmPassword, ...submitData } = formData;
       await onSubmit(submitData);
     }
-  };
-
-  const isSubmitting = externalSubmitting;
+  }, [formData, validateForm, onSubmit]);
 
   return (
     <form onSubmit={handleSubmit} className="register-form">
-      <div className="form-group">
-        <label htmlFor="name">Nome completo</label>
-        <input
-          id="name"
-          name="name"
-          type="text"
-          value={formData.name}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          placeholder="Seu nome completo"
-          disabled={isSubmitting}
-          className={touched.name && errors.name ? 'error' : ''}
-          required
-        />
-        {touched.name && errors.name && (
-          <span className="error-message">{errors.name}</span>
-        )}
-      </div>
+      <Input
+        label="Nome completo"
+        name="name"
+        type="text"
+        value={formData.name}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        placeholder="Seu nome completo"
+        error={errors.name}
+        touched={touched.name}
+        isValid={isValid.name}
+        disabled={externalSubmitting}
+        autoComplete="name"
+        required
+        size="md"
+        variant="default"
+        icon="👤"
+        showValidationMessages={true}
+        showSuccessIcon={true}
+        showErrorIcon={true}
+      />
       
-      <div className="form-group">
-        <label htmlFor="email">Email</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          placeholder="seu@email.com"
-          disabled={isSubmitting}
-          className={touched.email && errors.email ? 'error' : ''}
-          required
-        />
-        {touched.email && errors.email && (
-          <span className="error-message">{errors.email}</span>
-        )}
-      </div>
+      <Input
+        label="Email"
+        name="email"
+        type="email"
+        value={formData.email}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        placeholder="seu@email.com"
+        error={errors.email}
+        touched={touched.email}
+        isValid={isValid.email}
+        disabled={externalSubmitting}
+        autoComplete="email"
+        required
+        size="md"
+        variant="default"
+        icon="📧"
+        showValidationMessages={true}
+        showSuccessIcon={true}
+        showErrorIcon={true}
+      />
       
-      <div className="form-group">
-        <label htmlFor="password">Senha</label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          placeholder="Mínimo 6 caracteres"
-          disabled={isSubmitting}
-          className={touched.password && errors.password ? 'error' : ''}
-          required
-        />
-        {touched.password && errors.password && (
-          <span className="error-message">{errors.password}</span>
-        )}
-      </div>
+      <Input
+        label="Senha"
+        name="password"
+        type="password"
+        value={formData.password}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        placeholder="Mínimo 6 caracteres"
+        error={errors.password}
+        touched={touched.password}
+        isValid={isValid.password}
+        disabled={externalSubmitting}
+        autoComplete="new-password"
+        required
+        size="md"
+        variant="default"
+        showPasswordStrength={true}
+        passwordValue={formData.password}
+        showValidationMessages={true}
+        showSuccessIcon={true}
+        showErrorIcon={true}
+      />
       
-      <div className="form-group">
-        <label htmlFor="confirmPassword">Confirmar senha</label>
-        <input
-          id="confirmPassword"
-          name="confirmPassword"
-          type="password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          placeholder="Confirme sua senha"
-          disabled={isSubmitting}
-          className={touched.confirmPassword && errors.confirmPassword ? 'error' : ''}
-          required
-        />
-        {touched.confirmPassword && errors.confirmPassword && (
-          <span className="error-message">{errors.confirmPassword}</span>
-        )}
-      </div>
+      <Input
+        label="Confirmar senha"
+        name="confirmPassword"
+        type="password"
+        value={formData.confirmPassword}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        placeholder="Confirme sua senha"
+        error={errors.confirmPassword}
+        touched={touched.confirmPassword}
+        isValid={isValid.confirmPassword}
+        disabled={externalSubmitting}
+        autoComplete="new-password"
+        required
+        size="md"
+        variant="default"
+        showValidationMessages={true}
+        showSuccessIcon={true}
+        showErrorIcon={true}
+      />
 
       <button 
         type="submit" 
         className="submit-btn"
-        disabled={isSubmitting}
+        disabled={externalSubmitting}
       >
-        {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
+        {externalSubmitting ? (
+          <>
+            <span className="spinner"></span>
+            Cadastrando...
+          </>
+        ) : (
+          'Cadastrar'
+        )}
       </button>
     </form>
   );
