@@ -1,3 +1,4 @@
+// ./validation.js
 import * as yup from 'yup';
 
 export const loginSchema = yup.object({
@@ -7,7 +8,7 @@ export const loginSchema = yup.object({
     .required('Email é obrigatório'),
   password: yup
     .string()
-    .min(6, 'Mínimo 6 caracteres')
+    .min(6, 'Senha deve ter pelo menos 6 caracteres')
     .required('Senha é obrigatória')
 }).required();
 

@@ -1,0 +1,32 @@
+/* Adicione ao LoginModal.css */
+.modal-footer {
+  margin-top: 20px;
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.modal-footer p {
+  color: #666;
+  font-size: 14px;
+}
+
+.toggle-mode-btn {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.toggle-mode-btn:hover:not(:disabled) {
+  color: #0056b3;
+}
+
+.toggle-mode-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

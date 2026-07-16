@@ -1,18 +1,21 @@
-// src/modals/login/LoginForm.jsx
+// src/modals/register/RegisterForm.jsx
 import { useState } from 'react';
-import { loginSchema } from './validation';
+import * as yup from 'yup';
+import { registerSchema } from './validation';
 
-const LoginForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
+const RegisterForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
   const [formData, setFormData] = useState({
+    name: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
   const validateField = async (name, value) => {
     try {
-      await loginSchema.validateAt(name, { [name]: value });
+      await registerSchema.validateAt(name, { [name]: value });
       setErrors(prev => ({ ...prev, [name]: '' }));
       return true;
     } catch (error) {
@@ -23,7 +26,7 @@ const LoginForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
 
   const validateForm = async (data) => {
     try {
-      await loginSchema.validate(data, { abortEarly: false });
+      await registerSchema.validate(data, { abortEarly: false });
       setErrors({});
       return true;
     } catch (error) {
@@ -63,14 +66,34 @@ const LoginForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
     
     const isValid = await validateForm(formData);
     if (isValid) {
-      await onSubmit(formData);
+      const { confirmPassword, ...submitData } = formData;
+      await onSubmit(submitData);
     }
   };
 
   const isSubmitting = externalSubmitting;
 
   return (
-    <form onSubmit={handleSubmit} className="login-form">
+    <form onSubmit={handleSubmit} className="register-form">
+      <div className="form-group">
+        <label htmlFor="name">Nome completo</label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          value={formData.name}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          placeholder="Seu nome completo"
+          disabled={isSubmitting}
+          className={touched.name && errors.name ? 'error' : ''}
+          required
+        />
+        {touched.name && errors.name && (
+          <span className="error-message">{errors.name}</span>
+        )}
+      </div>
+      
       <div className="form-group">
         <label htmlFor="email">Email</label>
         <input
@@ -99,7 +122,7 @@ const LoginForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
           value={formData.password}
           onChange={handleChange}
           onBlur={handleBlur}
-          placeholder="Sua senha"
+          placeholder="Mínimo 6 caracteres"
           disabled={isSubmitting}
           className={touched.password && errors.password ? 'error' : ''}
           required
@@ -108,16 +131,35 @@ const LoginForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
           <span className="error-message">{errors.password}</span>
         )}
       </div>
+      
+      <div className="form-group">
+        <label htmlFor="confirmPassword">Confirmar senha</label>
+        <input
+          id="confirmPassword"
+          name="confirmPassword"
+          type="password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          placeholder="Confirme sua senha"
+          disabled={isSubmitting}
+          className={touched.confirmPassword && errors.confirmPassword ? 'error' : ''}
+          required
+        />
+        {touched.confirmPassword && errors.confirmPassword && (
+          <span className="error-message">{errors.confirmPassword}</span>
+        )}
+      </div>
 
       <button 
         type="submit" 
         className="submit-btn"
         disabled={isSubmitting}
       >
-        {isSubmitting ? 'Entrando...' : 'Entrar'}
+        {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
       </button>
     </form>
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
