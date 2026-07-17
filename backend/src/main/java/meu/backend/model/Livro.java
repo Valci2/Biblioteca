@@ -14,8 +14,15 @@ public class Livro {
     @Column(columnDefinition = "TEXT")
     private String sinopse;
     private String capaURL;
-    private Integer totalLicencas;
-    private Integer disponiveis;
+    private Integer totalLicencas = 0;
+    private Integer disponiveis = 0;
     private Double precoVenda;
     private Double avaliacaoMedia;
+
+    @PrePersist
+    protected void onPrePersist() {
+        if (this.totalLicencas != null) {
+            this.disponiveis = this.totalLicencas;
+        }
+    }
 }

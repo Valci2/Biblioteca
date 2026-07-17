@@ -2,6 +2,7 @@ package meu.backend.security;
 
 import java.io.IOException;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -25,23 +26,26 @@ public class SecurityFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) 
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         
         String token = request.getHeader("Authorization");
 
         if (token != null && token.startsWith("Bearer ")) {
             String jwt = token.substring(7);
-            String email = tokenService.getSubject(jwt);
+            try {
+                String email = tokenService.getSubject(jwt);
+                System.out.println("Usuário identificado no token: " + email);
 
-            if (email != null) {
-                var user = userRepository.findByEmail(email).orElseThrow();
-                
-                if (user != null) {
+                if (email != null) {
+                    var user = userRepository.findByEmail(email).orElseThrow();
+
                     // Criar a autenticação
-                    var auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()); 
+                    var auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
+            } catch (Exception e) {
+                System.out.println("Erro ao validar token: " + e.getMessage());
             }
         }
         
