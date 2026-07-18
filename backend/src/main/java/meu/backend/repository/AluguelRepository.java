@@ -12,4 +12,5 @@ public interface AluguelRepository extends JpaRepository<Aluguel, Long> {
     List<Aluguel> findByUsuarioAndStatus(User usuario, String status);
 
     long countByLivroAndStatus(Livro livro, String string);
+    boolean existsByUsuarioAndLivroAndStatus(User usuario, Livro livro, String status);
 }

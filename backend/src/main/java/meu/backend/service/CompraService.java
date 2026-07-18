@@ -23,6 +23,16 @@ public class CompraService {
 
     @Transactional
     public Compra processarCompra(User user, Livro livro) {
+        //Validar se o usuário já possui este livro
+        if (compraRepository.existsByUsuarioAndLivro(user, livro)) {
+            throw new RuntimeException("Você já possui uma licença deste livro!");
+        }
+
+        // Verificar disponibilidade
+        if (livro.getDisponiveis() <= 0) {
+            throw new RuntimeException("Livro sem estoque disponível!");
+        }
+
         // Aqui entraria a integração com um gateway real
         // Por enquanto, é apenas se o livro pode ser comprado
         
@@ -36,6 +46,9 @@ public class CompraService {
         // Simular emissão de comprovante
         String comprovante = "COMPRA-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         compra.setComprovanteRetirada(comprovante);
+
+        // Decrementar o estoque após a compra
+        livro.setDisponiveis(livro.getDisponiveis() - 1);
 
         return compraRepository.save(compra);
     }

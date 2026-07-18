@@ -26,6 +26,11 @@ public class AluguelService {
 
     @Transactional
     public Aluguel realizarAluguel(User user, Livro livro) {
+        // Verificar se já possui o livro alugado
+        if (aluguelRepository.existsByUsuarioAndLivroAndStatus(user, livro, "ATIVO")) {
+            throw new RuntimeException("Você já possui um aluguel ativo deste livro!");
+        }
+
         // Verificar disponibilidade
         if (livro.getDisponiveis() <= 0) {
             throw new RuntimeException("Livro sem estoque disponível!");

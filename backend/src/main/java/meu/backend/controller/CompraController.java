@@ -1,9 +1,7 @@
 package meu.backend.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import meu.backend.model.Compra;
 import meu.backend.model.Livro;
@@ -11,6 +9,8 @@ import meu.backend.model.User;
 import meu.backend.repository.LivroRepository;
 import meu.backend.repository.UserRepository;
 import meu.backend.service.CompraService;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/purchases")
@@ -27,10 +27,17 @@ public class CompraController {
         this.livroRepository = livroRepository;
     }
 
-    @PostMapping
-    public Compra realizarCompra(@RequestParam Long userId, @RequestParam Long livroId) {
-        User user = userRepository.findById(userId).orElseThrow();
-        Livro livro = livroRepository.findById(livroId).orElseThrow();
-        return compraService.processarCompra(user, livro);
+    @PostMapping("/{bookId}")
+    public ResponseEntity<?> realizarCompra(Principal principal, @PathVariable Long bookId) {
+        try {
+            User user = userRepository.findByEmail(principal.getName())
+                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+            Livro livro = livroRepository.findById(bookId)
+                    .orElseThrow(() -> new RuntimeException("Livro não encontrado."));
+            Compra compra = compraService.processarCompra(user, livro);
+            return ResponseEntity.ok(compra);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

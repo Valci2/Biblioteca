@@ -29,9 +29,9 @@ public class ListaDesejoController {
     @PostMapping("/{bookId}")
     public ResponseEntity<?> adicionarLivro(@PathVariable Long bookId, Principal principal) {
         try {
-            User usuario = userRepository.findByEmail(principal.getName())
+            User user = userRepository.findByEmail(principal.getName())
                     .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-            service.adicionarLivro(usuario, bookId);
+            service.adicionarLivro(user, bookId);
             return ResponseEntity.ok("Livro adicionado à lista de desejos.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -41,9 +41,9 @@ public class ListaDesejoController {
     @DeleteMapping("/{bookId}")
     public ResponseEntity<?> removerLivro(@PathVariable Long bookId, Principal principal) {
         try {
-            User usuario = userRepository.findByEmail(principal.getName())
+            User user = userRepository.findByEmail(principal.getName())
                     .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-            service.removerLivro(usuario, bookId);
+            service.removerLivro(user, bookId);
             return ResponseEntity.ok("Livro removido da lista de desejos.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
