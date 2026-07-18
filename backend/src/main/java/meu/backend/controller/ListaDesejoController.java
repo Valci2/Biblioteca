@@ -1,15 +1,17 @@
 package meu.backend.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import meu.backend.model.User;
 import meu.backend.repository.UserRepository;
 import meu.backend.service.ListaDesejoService;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/wishlist")
@@ -25,14 +27,26 @@ public class ListaDesejoController {
     }
 
     @PostMapping("/{bookId}")
-    public void adicionarLivro(@PathVariable Long bookId, @RequestParam Long userId) {
-        User usuario = userRepository.findById(userId).orElseThrow();
-        service.adicionarLivro(usuario, bookId);
+    public ResponseEntity<?> adicionarLivro(@PathVariable Long bookId, Principal principal) {
+        try {
+            User usuario = userRepository.findByEmail(principal.getName())
+                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            service.adicionarLivro(usuario, bookId);
+            return ResponseEntity.ok("Livro adicionado à lista de desejos.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{bookId}")
-    public void removerLivro(@PathVariable Long bookId, @RequestParam Long userId) {
-        User usuario = userRepository.findById(userId).orElseThrow();
-        service.removerLivro(usuario, bookId);
+    public ResponseEntity<?> removerLivro(@PathVariable Long bookId, Principal principal) {
+        try {
+            User usuario = userRepository.findByEmail(principal.getName())
+                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            service.removerLivro(usuario, bookId);
+            return ResponseEntity.ok("Livro removido da lista de desejos.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
