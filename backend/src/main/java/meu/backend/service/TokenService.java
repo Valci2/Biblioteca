@@ -1,9 +1,11 @@
 package meu.backend.service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Jwts;
@@ -13,8 +15,14 @@ import meu.backend.model.User;
 @Service
 public class TokenService {
 
-    // Chave secreta temporária
-    private final SecretKey key = Keys.hmacShaKeyFor("uma-chave-secreta-muito-segura-e-longa-de-pelo-menos-32-caracteres".getBytes());
+    // Injetar a chave do application.properties (com fallback)
+    @Value("${api.security.token.secret:uma-chave-secreta-muito-segura-e-longa-de-pelo-menos-32-caracteres}")
+    private String secret;
+
+    // Gerar a SecretKey dinamicamente
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
 
     public String gerarToken(User usuario) {
         return Jwts.builder()
@@ -23,13 +31,13 @@ public class TokenService {
                 .claim("tipo", usuario.getTipo())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 86400000))
-                .signWith(key)
+                .signWith(getSigningKey())
                 .compact();
     }
 
     public String getSubject(String token) {
         return Jwts.parser()
-                .verifyWith(key)
+                .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
