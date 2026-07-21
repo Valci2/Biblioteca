@@ -2,11 +2,13 @@ package meu.backend.controller;
 
 import java.util.List;
 
+import meu.backend.dto.AluguelRelatorioDTO;
+import meu.backend.model.Aluguel;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import meu.backend.model.Aluguel;
 import meu.backend.repository.AluguelRepository;
 
 @RestController
@@ -22,8 +24,30 @@ public class AdminReportController {
 
     // Retornar o histórico completo
     @GetMapping("/rentals")
-    public List<Aluguel> gerarRelatorioRentals() {
-        // Usar um DTO aqui no futuro pra não expor todos os dados dos usuários
-        return aluguelRepository.findAll();
+    public List<AluguelRelatorioDTO> gerarRelatorioRentals() {
+        return aluguelRepository.findAll().stream()
+                .map(this::converterParaDto)
+                .toList();
+    }
+
+    // Retornar o histórico de um livro específico
+    @GetMapping("/rentals/{bookId}")
+    public List<AluguelRelatorioDTO> retornarAlugueisPorLivro(@PathVariable Long bookId) {
+        return aluguelRepository.findByLivroId(bookId).stream()
+                .map(this::converterParaDto)
+                .toList();
+    }
+
+    // Para evitar duplicação
+    private AluguelRelatorioDTO converterParaDto(Aluguel aluguel) {
+        return new AluguelRelatorioDTO(
+                aluguel.getId(),
+                aluguel.getUsuario().getNome(),
+                aluguel.getUsuario().getEmail(),
+                aluguel.getLivro().getTitulo(),
+                aluguel.getDataEmprestimo(),
+                aluguel.getDataDevolucao(),
+                aluguel.getStatus()
+        );
     }
 }

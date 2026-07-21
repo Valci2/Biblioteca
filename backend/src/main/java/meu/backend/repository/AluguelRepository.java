@@ -10,7 +10,7 @@ import meu.backend.model.User;
 
 public interface AluguelRepository extends JpaRepository<Aluguel, Long> {
     List<Aluguel> findByUsuarioAndStatus(User usuario, String status);
-
+    List<Aluguel> findByLivroId(Long livroId);
     long countByLivroAndStatus(Livro livro, String string);
     boolean existsByUsuarioAndLivroAndStatus(User usuario, Livro livro, String status);
 }
