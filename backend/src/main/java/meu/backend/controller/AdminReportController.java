@@ -38,7 +38,7 @@ public class AdminReportController {
                 .toList();
     }
 
-    // Para evitar duplicação
+    // Para evitar duplicação de código
     private AluguelRelatorioDTO converterParaDto(Aluguel aluguel) {
         return new AluguelRelatorioDTO(
                 aluguel.getId(),
