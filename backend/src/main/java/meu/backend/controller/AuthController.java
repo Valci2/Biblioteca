@@ -39,6 +39,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDto) {
+        System.out.println("========================================");
+        System.out.println("🔐 TENTATIVA DE LOGIN");
+        System.out.println("  Email: '" + loginDto.email() + "'");
+        System.out.println("  Senha: '" + loginDto.senha() + "'");
+        System.out.println("========================================");
+
         // Buscar o usuário pelo email
         User usuario = userRepository.findByEmail(loginDto.email())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
