@@ -1,5 +1,6 @@
 /* src/components/Navbar.css */
 
+/* ===== BASE ===== */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -12,6 +13,7 @@
   top: 0;
   z-index: 1000;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  animation: slideDown 0.4s ease-out;
 }
 
 /* ===== BRAND ===== */
@@ -30,7 +32,6 @@
 .navbar-brand a:hover {
   opacity: 0.85;
 }
-
 
 /* ===== NAV LINKS ===== */
 .navbar-links {
@@ -95,6 +96,39 @@
   box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3);
 }
 
+/* ===== BOTÃO PERFIL ===== */
+.btn-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  text-decoration: none;
+  color: white;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-profile:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-profile .username {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.avatar-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
 /* ===== RESPONSIVO ===== */
 @media (max-width: 768px) {
   .navbar {
@@ -104,10 +138,6 @@
 
   .navbar-brand a {
     font-size: 1.2rem;
-  }
-
-  .navbar-brand a::before {
-    font-size: 1.1rem;
   }
 
   .navbar-links {
@@ -124,6 +154,19 @@
     padding: 0.4rem 1rem;
     font-size: 0.85rem;
   }
+
+  .btn-profile {
+    padding: 4px 10px;
+  }
+
+  .btn-profile .username {
+    font-size: 0.8rem;
+  }
+
+  .avatar-icon {
+    width: 28px;
+    height: 28px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -133,10 +176,6 @@
 
   .navbar-brand a {
     font-size: 1rem;
-  }
-
-  .navbar-brand a::before {
-    font-size: 0.9rem;
   }
 
   .navbar-links {
@@ -151,6 +190,20 @@
     padding: 0.3rem 0.8rem;
     font-size: 0.8rem;
     border-radius: 6px;
+  }
+
+  .btn-profile {
+    padding: 3px 8px;
+    gap: 6px;
+  }
+
+  .btn-profile .username {
+    font-size: 0.7rem;
+  }
+
+  .avatar-icon {
+    width: 24px;
+    height: 24px;
   }
 }
 
@@ -186,9 +239,24 @@
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
   }
+
+  .btn-profile {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.05);
+    color: #e8f0fe;
+  }
+
+  .btn-profile:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .avatar-icon {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
 }
 
-/* ===== ANIMAÇÃO DE ENTRADA ===== */
+/* ===== ANIMAÇÕES ===== */
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -200,6 +268,39 @@
   }
 }
 
-.navbar {
-  animation: slideDown 0.4s ease-out;
+/* ===== UTILITÁRIOS ===== */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Estilo para o container do avatar com fallback */
+.avatar-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Fallback para quando não há imagem de avatar */
+.avatar-fallback {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+  .avatar-fallback {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+  }
 }

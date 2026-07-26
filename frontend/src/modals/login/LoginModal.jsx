@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Modal from 'react-modal';
 import LoginForm from './LoginForm';
 import RegisterForm from '../register/RegisterForm';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import './LoginModal.css';
 
 Modal.setAppElement('#root');

@@ -16,7 +16,7 @@ import meu.backend.model.User;
 public class TokenService {
 
     // Injetar a chave do application.properties (com fallback)
-    @Value("api.security.token.secret")
+    @Value("api.security.token.secret:JWT_SECRET")
     private String secret;
 
     // Gerar a SecretKey dinamicamente

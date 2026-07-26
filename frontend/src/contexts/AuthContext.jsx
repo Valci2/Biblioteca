@@ -4,19 +4,12 @@ import { authApi } from '../services/api';
 
 const AuthContext = createContext();
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
-  }
-  return context;
-};
-
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Carrega usuário do localStorage ao iniciar
   useEffect(() => {
     const loadUser = async () => {
       const token = localStorage.getItem('token');
@@ -37,6 +30,7 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, []);
 
+  // Login
   const login = useCallback(async (email, password) => {
     setError(null);
     try {
@@ -45,10 +39,9 @@ export const AuthProvider = ({ children }) => {
       // O backend retorna { token: "jwt_token" }
       const { token } = response;
       
-      // Salva o token
+      // Salva o token e informações do usuário
       localStorage.setItem('token', token);
       
-      // Salva informações básicas do usuário
       const userData = { email };
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
@@ -60,19 +53,16 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  // Registro
   const register = useCallback(async (userData) => {
     setError(null);
     try {
-      // Envia os dados para a API
       const response = await authApi.register(userData);
-      
-      // O backend retorna uma string: "Usuário cadastrado com sucesso!"
-      return response;
+      return response; // "Usuário cadastrado com sucesso!"
     } catch (err) {
-      // Trata erros específicos do registro
       let errorMessage = err.message || 'Erro ao fazer registro';
       
-      // Erros comuns do backend
+      // Tratamento de erros comuns
       if (err.message?.toLowerCase().includes('email já cadastrado') || 
           err.message?.toLowerCase().includes('duplicate entry') ||
           err.message?.toLowerCase().includes('unique')) {
@@ -84,6 +74,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  // Logout
   const logout = useCallback(async () => {
     try {
       await authApi.logout();
@@ -96,6 +87,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  // Atualizar usuário
   const updateUser = useCallback((updatedUser) => {
     const newUser = { ...user, ...updatedUser };
     setUser(newUser);
@@ -118,4 +110,13 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+// Hook personalizado para usar o contexto
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
+  }
+  return context;
 };
