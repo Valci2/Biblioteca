@@ -150,6 +150,59 @@
   gap: 18px;
 }
 
+label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #cbd5e1;
+  margin-bottom: 6px;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  background-color: #f1f5f9;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+input::placeholder {
+  color: #94a3b8;
+}
+
+input:focus {
+  border-color: #3b82f6;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.input-container input {
+  width: 100%;
+  padding-right: 45px;
+}
+
+.input-toggle-password {
+  position: absolute;
+  right: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* ===== SUBMIT BUTTON ===== */
 .submit-btn {
   padding: 14px 20px;
@@ -187,7 +240,7 @@
   transform: none;
 }
 
-/* Spinner no botão */
+/* ===== SPINNER ===== */
 .submit-btn .spinner {
   display: inline-block;
   width: 18px;
@@ -198,6 +251,46 @@
   animation: spin 0.7s linear infinite;
   vertical-align: middle;
 }
+
+/* ===== MESSAGES ===== */
+.input-error-message,
+.input-success-message {
+  font-size: 14px;
+  font-weight: 400;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.password-strength {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.strength-bar {
+  display: flex;
+  gap: 4px;
+  height: 4px;
+  width: 100%;
+  background-color: #334155;
+  border-radius: 2px;
+  transition: background-color 0.3s ease;
+}
+
+.strength-fill.weak { background-color: #ef4444; }
+.strength-fill.medium { background-color: #f59e0b; }
+.strength-fill.strong { background-color: #10b981; }
+
+.strength-label {
+  font-size: 14px;
+  font-weight: 400;
+  color: #94a3b8;
+  display: flex;
+  justify-content: space-between;
+}
+
+.strength-label span { font-weight: 600; }
 
 /* ===== FOOTER ===== */
 .modal-footer {

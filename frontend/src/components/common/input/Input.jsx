@@ -90,10 +90,6 @@ const Input = forwardRef(({
       )}
       
       <div className={`input-container ${getSizeClasses()} ${getVariantClasses()} ${status}`}>
-        {icon && iconPosition === 'left' && (
-          <span className="input-icon input-icon-left">{icon}</span>
-        )}
-        
         <input
           ref={ref}
           id={name}
@@ -121,24 +117,12 @@ const Input = forwardRef(({
             {showPassword ? '👁️' : '👁️‍🗨️'}
           </button>
         )}
-        
-        {icon && iconPosition === 'right' && (
-          <span className="input-icon input-icon-right">{icon}</span>
-        )}
-        
-        {/* Ícones de status - controlados individualmente */}
-        {showValidationMessages && status === 'success' && showSuccess && showSuccessIcon && (
-          <span className="input-status-icon">✓</span>
-        )}
-        
-        {showValidationMessages && status === 'error' && showErrorIcon && (
-          <span className="input-status-icon">✕</span>
-        )}
+
       </div>
       
       {/* Mensagens de validação */}
       {shouldShowError && (
-        <span className="input-error-message">{error}</span>
+        <span className="input-error-message">✕ {error}</span>
       )}
       
       {shouldShowSuccess && (
