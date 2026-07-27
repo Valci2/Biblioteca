@@ -14,6 +14,10 @@ public class Livro {
     @Column(columnDefinition = "TEXT")
     private String sinopse;
     private String capaURL;
+    private String autor;
+    private String categoria;
+    private String editora;
+    private Integer anoCriacao;
     private Integer totalLicencas = 0;
     private Integer disponiveis = 0;
     private Double precoVenda;

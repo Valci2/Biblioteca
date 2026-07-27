@@ -14,12 +14,12 @@ import meu.backend.repository.LivroRepository;
 @Service
 public class ListaDesejoService {
     
-    private final ListaDesejoRepository repository;
+    private final ListaDesejoRepository listaRepository;
     private final LivroRepository livroRepository;
 
     // Para detectar automaticamente que este é o construtor a ser usado
-    ListaDesejoService(ListaDesejoRepository repository, LivroRepository livroRepository) {
-        this.repository = repository;
+    ListaDesejoService(ListaDesejoRepository listaRepository, LivroRepository livroRepository) {
+        this.listaRepository = listaRepository;
         this.livroRepository = livroRepository;
     }
 
@@ -29,7 +29,7 @@ public class ListaDesejoService {
                 .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
 
         // Buscar ou criar uma lista de desejo
-        ListaDesejo lista = repository.findByUsuario(usuario)
+        ListaDesejo lista = listaRepository.findByUsuario(usuario)
                 .orElse(new ListaDesejo());
         
         if (lista.getUsuario() == null) {
@@ -40,7 +40,7 @@ public class ListaDesejoService {
         // Evitar adicionar o mesmo livro duas vezes
         if (!lista.getLivros().contains(livro)) {
             lista.getLivros().add(livro);
-            repository.save(lista);
+            listaRepository.save(lista);
         }
     }
 
@@ -49,7 +49,7 @@ public class ListaDesejoService {
         Livro livro = livroRepository.findById(livroId)
                 .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
 
-        ListaDesejo lista = repository.findByUsuario(usuario)
+        ListaDesejo lista = listaRepository.findByUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Lista não encontrada"));
         
         //Remover o livro da lista
@@ -60,6 +60,6 @@ public class ListaDesejoService {
         }
 
         //Salvar a lista atualizada
-        repository.save(lista);
+        listaRepository.save(lista);
     }
 }

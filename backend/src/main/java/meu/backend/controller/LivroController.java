@@ -1,5 +1,6 @@
 package meu.backend.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -7,23 +8,28 @@ import meu.backend.model.Livro;
 import meu.backend.repository.LivroRepository;
 import meu.backend.service.LivroService;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/admin/books")
-public class AdminLivroController {
+@RequestMapping("/api/books")
+public class LivroController {
 
     private final LivroRepository livroRepository;
     private final LivroService livroService;
 
     // Para detectar automaticamente que este é o construtor a ser usado
-    AdminLivroController(LivroRepository livroRepository, LivroService livroService) {
+    LivroController(LivroRepository livroRepository, LivroService livroService) {
         this.livroRepository = livroRepository;
         this.livroService = livroService;
     }
 
-    // Registrar livro
-    @PostMapping
-    public Livro registrarLivro(@RequestBody Livro livro) {
-        return livroRepository.save(livro);
+    // ROTAS PÚBLICAS
+
+    // Retornar todos os livros
+    @GetMapping
+    public ResponseEntity<List<Livro>> listarTodos() {
+        List<Livro> livros = livroRepository.findAll();
+        return ResponseEntity.ok(livros);
     }
 
     // Retornar livro por id
@@ -32,6 +38,15 @@ public class AdminLivroController {
         return livroRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    // ROTAS PROTEGIDAS
+
+    // Registrar livro
+    @PostMapping
+    public ResponseEntity<Livro> registrarLivro(@RequestBody Livro livro) {
+        Livro salvo = livroRepository.save(livro);
+        return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
     }
 
     // Aumentar estoque

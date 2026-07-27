@@ -1,8 +1,10 @@
 package meu.backend.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,20 +26,38 @@ public class User implements UserDetails {
     private String email;
     private String senha;
     private String tipo; // Ex: ADMIN, CLIENTE
-    
-    @OneToOne(cascade = CascadeType.ALL)
-    private Preferencias preferencias;
+
+    @OneToMany(mappedBy = "usuario")
+    private List<Compra> compras = new ArrayList<>();
+
+    @OneToMany(mappedBy = "usuario")
+    private List<Aluguel> alugueis = new ArrayList<>();
+
+    // Metodo dinâmico do número de compras
+    public int getTotalLivrosComprados() {
+        return this.compras.size();
+    }
+
+    // Metodo dinâmico do número de aluguéis
+    public int getLivrosLendoAtualmente() {
+        return (int) this.alugueis.stream()
+                .filter(a -> "ATIVO".equalsIgnoreCase(a.getStatus()))
+                .count();
+    }
 
     @Override
+    @NonNull
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // O Spring precisa que do prefixo "ROLE_"
+        // O Spring precisa do prefixo "ROLE_"
         return List.of(new SimpleGrantedAuthority("ROLE_" + this.tipo.toUpperCase()));
     }
 
-    @Override public String getPassword() { return this.senha; }
-    @Override public String getUsername() { return this.email; }
-    @Override public boolean isAccountNonExpired() { return true; }
-    @Override public boolean isAccountNonLocked() { return true; }
-    @Override public boolean isCredentialsNonExpired() { return true; }
-    @Override public boolean isEnabled() { return true; }
+    @Override
+    @NonNull
+    public String getPassword() { return this.senha; }
+
+    @Override
+    @NonNull
+    public String getUsername() { return this.email; }
+
 }
