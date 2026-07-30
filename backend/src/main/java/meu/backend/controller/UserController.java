@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -22,7 +24,15 @@ public class UserController {
     // Retornar perfil específico
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> obterPerfil(@PathVariable Long id) {
-        UserResponseDTO perfil = userService.obterPerfilUsuario(id);
+        UserResponseDTO perfil = userService.obterPerfilPorId(id);
+        return ResponseEntity.ok(perfil);
+    }
+
+    // Retornar o usuário logado atual
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> obterPerfilLogado(Principal principal) {
+        String email = principal.getName();
+        UserResponseDTO perfil = userService.obterPerfilPorEmail(email);
         return ResponseEntity.ok(perfil);
     }
 }

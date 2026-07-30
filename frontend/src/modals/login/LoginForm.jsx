@@ -6,7 +6,7 @@ import Input from '../../components/common/input/Input';
 const LoginForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
   const [formData, setFormData] = useState({
     email: '',
-    senha: ''
+    password: ''
   });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});

@@ -8,6 +8,7 @@ const Perfil = () => {
   const { user, logout, updateUser } = useAuth();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+  const [abaAtiva, setAbaAtiva] = useState('comprados');
   
   // Estado separado para edição
   const [editData, setEditData] = useState({
@@ -19,12 +20,13 @@ const Perfil = () => {
   const [avatar, setAvatar] = useState(user?.avatar || null);
   const [avatarFile, setAvatarFile] = useState(null);
 
-  // Estatísticas (mock)
-  const stats = {
-    livrosComprados: 42,
-    livrosDoados: 15,
-    livrosVendidos: 28
-  };
+  // Estatísticas (com fallback)
+  const livrosCompradosList = user?.compras || [];
+  const livrosAlugadosList = user?.alugueisAtivos || [];
+  const wishlistList = user?.wishlist || [];
+  const livrosCompradosCount = user?.livrosComprados || 0;
+  const livrosAlugadosCount = user?.livrosLendoAtualmente || 0;
+  const wishlistCount = 0; // Mock
 
   const handleLogout = () => {
     logout();
@@ -107,115 +109,184 @@ const Perfil = () => {
   const isImageAvatar = avatar && (avatar.startsWith('data:image') || avatar.startsWith('http'));
 
   return (
-    <div className="perfil-page-wrapper">
+      <div className="perfil-page-wrapper">
+        {/* Imagem de fundo */}
+        <div className="perfil-capa-fundo">
+          <div className="capa-overlay"></div>
+        </div>
 
-      {/* Imagem de fundo */}
-      <div className="perfil-capa-fundo">
-        <div className="capa-overlay"></div>
-      </div>
+        {/* Conteúdo acima da imagem */}
+        <div className="perfil-container">
+          <div className="perfil-card">
+            <div className="avatar-wrapper">
+              {isImageAvatar ? (
+                  <img
+                      src={avatar}
+                      alt={editData.nome}
+                      className="perfil-avatar"
+                  />
+              ) : (
+                  <div className="perfil-avatar-fallback">
+                    {getInitials(editData.nome)}
+                  </div>
+              )}
+              {isEditing && (
+                  <label className="avatar-upload">
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        hidden
+                    />
+                    <span className="upload-icon">📷</span>
+                  </label>
+              )}
+            </div>
 
-      {/* Conteúdo acima da imagem */}
-      <div className="perfil-container">
-        <div className="perfil-card">
-          <div className="avatar-wrapper">
-            {isImageAvatar ? (
-                <img
-                    src={avatar}
-                    alt={editData.nome}
-                    className="perfil-avatar"
-                />
+            {/* Nome e email */}
+            {!isEditing ? (
+                <div className="perfil-info">
+                  <h1 className="perfil-nome">{user?.nome || 'Usuário'}</h1>
+                  <p className="perfil-email">{user?.email || 'usuario@email.com'}</p>
+                </div>
             ) : (
-                <div className="perfil-avatar-fallback">
-                  {getInitials(editData.nome)}
+                <div className="perfil-edit-form">
+                  <input
+                      type="text"
+                      name="nome"
+                      value={editData.nome}
+                      onChange={handleChange}
+                      placeholder="Nome completo"
+                      className="edit-input"
+                  />
+                  <input
+                      type="email"
+                      name="email"
+                      value={editData.email}
+                      onChange={handleChange}
+                      placeholder="Email"
+                      className="edit-input"
+                      disabled
+                  />
                 </div>
             )}
-            {isEditing && (
-                <label className="avatar-upload">
-                  <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      hidden
-                  />
-                  <span className="upload-icon">📷</span>
-                </label>
+
+            {/* Estatísticas de livros */}
+            {!isEditing && (
+                <div className="livros-stats">
+                  <div className="stat-content">
+                    <span className="stat-value">{livrosCompradosCount}</span>
+                    <span className="stat-label">Comprados</span>
+                  </div>
+
+                  <div className="stat-content">
+                    <span className="stat-value">{wishlistCount}</span>
+                    <span className="stat-label">Em Desejo</span>
+                  </div>
+
+                  <div className="stat-content">
+                    <span className="stat-value">{livrosAlugadosCount}</span>
+                    <span className="stat-label">Alugados</span>
+                  </div>
+                </div>
             )}
           </div>
 
-          {/* Nome e email */}
-          {!isEditing ? (
-              <div className="perfil-info">
-                <h1 className="perfil-nome">{user?.nome || 'Usuário'}</h1>
-                <p className="perfil-email">{user?.email || 'usuario@email.com'}</p>
-              </div>
-          ) : (
-              <div className="perfil-edit-form">
-                <input
-                    type="text"
-                    name="nome"
-                    value={editData.nome}
-                    onChange={handleChange}
-                    placeholder="Nome completo"
-                    className="edit-input"
-                />
-                <input
-                    type="email"
-                    name="email"
-                    value={editData.email}
-                    onChange={handleChange}
-                    placeholder="Email"
-                    className="edit-input"
-                    disabled
-                />
-              </div>
-          )}
+          <div className="perfil-sections-container">
 
-          {/* Estatísticas de livros */}
-          <div className="livros-stats">
-            <div className="stat-content">
-              <span className="stat-value">{stats.livrosComprados}</span>
-              <span className="stat-label">Comprados</span>
+            {/* Ações do perfil */}
+              <div className="perfil-actions">
+                {!isEditing ? (
+                    <>
+                      <button onClick={handleEdit} className="btn-edit">
+                        Editar Perfil
+                      </button>
+                      <button onClick={handleLogout} className="btn-logout">
+                        Sair
+                      </button>
+                    </>
+                ) : (
+                    <>
+                      <button onClick={handleSave} className="btn-save">
+                        Salvar
+                      </button>
+                      <button onClick={() => setIsEditing(false)} className="btn-cancel">
+                        Cancelar
+                      </button>
+                    </>
+                )}
+              </div>
+
+            {/* Navegação por abas */}
+            <div className="perfil-tabs">
+              <button
+                  className={`tab-btn ${abaAtiva === 'comprados' ? 'active' : ''}`}
+                  onClick={() => setAbaAtiva('comprados')}
+              >
+                Livros Comprados ({livrosCompradosList.length})
+              </button>
+              <button
+                  className={`tab-btn ${abaAtiva === 'alugados' ? 'active' : ''}`}
+                  onClick={() => setAbaAtiva('alugados')}
+              >
+                Alugados Ativos ({livrosAlugadosList.length})
+              </button>
+              <button
+                  className={`tab-btn ${abaAtiva === 'desejos' ? 'active' : ''}`}
+                  onClick={() => setAbaAtiva('desejos')}
+              >
+                Lista de Desejos ({wishlistList.length})
+              </button>
             </div>
 
-            <div className="stat-content">
-              <span className="stat-value">{stats.livrosDoados}</span>
-              <span className="stat-label">Doados</span>
-            </div>
+            {/* Conteúdo das abas */}
+            <div className="perfil-tab-content">
+              {abaAtiva === 'comprados' && (
+                  <div className="livros-subgrid">
+                    {livrosCompradosList.length > 0 ? (
+                        livrosCompradosList.map((item, index) => (
+                            <div key={index} className="perfil-livro-card">
+                              <h4>{item.tituloLivro || 'Livro Comprado'}</h4>
+                              <p>Data: {item.dataCompra || 'N/A'}</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="vazio-msg">Você ainda não comprou nenhum livro.</p>
+                    )}
+                  </div>
+              )}
+              {abaAtiva === 'alugados' && (
+                  <div className="livros-subgrid">
+                    {livrosAlugadosList.length > 0 ? (
+                        livrosAlugadosList.map((item, index) => (
+                            <div key={index} className="perfil-livro-card">
+                              <h4>{item.tituloLivro || 'Livro Alugado'}</h4>
+                              <p>Devolução até: {item.dataFim || 'N/A'}</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="vazio-msg">Nenhum livro alugado no momento.</p>
+                    )}
+                  </div>
+              )}
 
-            <div className="stat-content">
-              <span className="stat-value">{stats.livrosVendidos}</span>
-              <span className="stat-label">Vendidos</span>
+              {abaAtiva === 'desejos' && (
+                  <div className="livros-subgrid">
+                    {wishlistList.length > 0 ? (
+                        wishlistList.map((item, index) => (
+                            <div key={index} className="perfil-livro-card">
+                              <h4>{item.titulo}</h4>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="vazio-msg">Sua lista de desejos está vazia.</p>
+                    )}
+                  </div>
+              )}
             </div>
           </div>
         </div>
-
-      {/* Ações do perfil */}
-      <div className="perfil-actions">
-        {!isEditing ? (
-            <>
-              <button onClick={handleEdit} className="btn-edit">
-                Editar Perfil
-              </button>
-              <button onClick={handleLogout} className="btn-logout">
-                Sair
-              </button>
-            </>
-        ) : (
-            <>
-              <button onClick={handleSave} className="btn-save">
-                Salvar
-              </button>
-              <button
-                  onClick={() => setIsEditing(false)}
-                  className="btn-cancel"
-              >
-                Cancelar
-              </button>
-            </>
-        )}
       </div>
-      </div>
-    </div>
   );
 };
 

@@ -105,7 +105,28 @@
   gap: 12px;
   width: 100%;
   max-width: 350px;
-  margin-bottom: 30px;
+  margin-bottom: 70px;
+}
+
+.perfil-edit-form input {
+  background-color: #f1f5f9;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.perfil-edit-form input::placeholder {
+  color: #94a3b8;
+}
+
+.perfil-edit-form input:focus {
+  border-color: #3b82f6;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 /* Estatísticas de livros */
@@ -150,7 +171,10 @@
 }
 
 .btn-edit,
-.btn-logout {
+.btn-logout,
+.btn-save,
+.btn-cancel
+{
   background: transparent;
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -175,25 +199,44 @@
   background: #e53e3e;
 }
 
-.btn-save {
-  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-  color: white;
-}
-
 .btn-save:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
-}
-
-.btn-cancel {
-  background: #a0aec0;
   color: white;
+  background: #34d399;
 }
 
 .btn-cancel:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(160, 174, 192, 0.4);
-  background: #718096;
+  color: white;
+  background: #94a3b8;
+}
+
+.perfil-sections-container {
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.perfil-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.perfil-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 15px;
+}
+
+.perfil-tab-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 200px;
 }
 
 /* Responsividade */

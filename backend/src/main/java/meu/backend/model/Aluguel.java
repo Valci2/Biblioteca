@@ -20,5 +20,6 @@ public class Aluguel {
 
     private LocalDate dataEmprestimo;
     private LocalDate dataDevolucao;
+
     private String status; // Ex: ATIVO, DEVOLVIDO
 }

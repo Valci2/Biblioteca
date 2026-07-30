@@ -1,6 +1,6 @@
 // src/context/AuthContext.jsx
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { authApi } from '../services/api';
+import React, {createContext, useCallback, useContext, useEffect, useState} from 'react';
+import api, {authApi} from '../services/api';
 
 const AuthContext = createContext();
 
@@ -9,20 +9,24 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Carrega usuário do localStorage ao iniciar
+  // Buscar os dados do user
+  const fetchUserData = async () => {
+    try {
+      const response = await api.get('/users/me');
+      setUser(response);
+    } catch (error) {
+      console.error('Erro ao buscar dados do perfil:', error);
+      await logout();
+    }
+  };
+
+  // Carregar usuário ao iniciar se houver token
   useEffect(() => {
     const loadUser = async () => {
       const token = localStorage.getItem('token');
-      const storedUser = localStorage.getItem('user');
 
-      if (token && storedUser) {
-        try {
-          setUser(JSON.parse(storedUser));
-        } catch (error) {
-          console.error('Erro ao restaurar sessão:', error);
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-        }
+      if (token) {
+        await fetchUserData();
       }
       setLoading(false);
     };
@@ -35,18 +39,17 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const response = await authApi.login({ email, password });
+      console.log('Resposta do login:', response);
       
       // O backend retorna { token: "jwt_token" }
       const { token } = response;
       
       // Salva o token e informações do usuário
       localStorage.setItem('token', token);
-      
-      const userData = { email };
-      setUser(userData);
-      localStorage.setItem('user', JSON.stringify(userData));
-      
-      return userData;
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      await fetchUserData();
+
+      return true;
     } catch (err) {
       setError(err.message || 'Erro ao fazer login');
       throw err;
@@ -57,8 +60,7 @@ export const AuthProvider = ({ children }) => {
   const register = useCallback(async (userData) => {
     setError(null);
     try {
-      const response = await authApi.register(userData);
-      return response; // "Usuário cadastrado com sucesso!"
+      return await authApi.register(userData); // "Usuário cadastrado com sucesso!"
     } catch (err) {
       let errorMessage = err.message || 'Erro ao fazer registro';
       
