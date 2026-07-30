@@ -8,7 +8,8 @@ const RegisterForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    tipo: 'CLIENTE'
   });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
@@ -16,7 +17,7 @@ const RegisterForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
 
   const validateField = useCallback(async (name, value) => {
     try {
-      // Para confirmPassword, precisamos validar com o contexto completo
+      // Validar com o contexto completo
       if (name === 'confirmPassword') {
         await registerSchema.validateAt(name, { 
           [name]: value,
@@ -126,6 +127,26 @@ const RegisterForm = ({ onSubmit, isSubmitting: externalSubmitting }) => {
         showSuccessIcon={true}
         showErrorIcon={true}
       />
+
+      <div className="input-group">
+        <label htmlFor="tipo" className="input-label">Tipo de Usuário*</label>
+        <select
+            id="tipo"
+            name="tipo"
+            value={formData.tipo}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            disabled={externalSubmitting}
+            className={`input-field ${errors.tipo && touched.tipo ? 'input-error' : ''}`}
+            required
+        >
+          <option value="CLIENTE">Cliente</option>
+          <option value="ADMIN">Administrador</option>
+        </select>
+        {errors.role && touched.role && (
+            <span className="error-message">{errors.role}</span>
+        )}
+      </div>
       
       <Input
         label="Senha"

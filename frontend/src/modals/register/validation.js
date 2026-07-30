@@ -5,12 +5,16 @@ export const registerSchema = yup.object({
   name: yup
     .string()
     .min(2, 'Nome deve ter pelo menos 2 caracteres')
-    .max(100, 'Nome muito longo')
+    .max(100, 'Nome é muito longo')
     .required('Nome é obrigatório'),
   email: yup
     .string()
     .email('Digite um email válido')
     .required('Email é obrigatório'),
+  tipo: yup
+    .string()
+    .oneOf(['CLIENTE', 'ADMIN'], 'Selecione um tipo válido')
+    .required('Tipo é obrigatório'),
   password: yup
     .string()
     .min(6, 'A senha deve ter pelo menos 6 caracteres')

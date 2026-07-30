@@ -1,4 +1,5 @@
-/* Adicione ao LoginModal.css */
+/* src/modals/register/RegisterForm.css */
+
 .modal-footer {
   margin-top: 20px;
   text-align: center;
@@ -30,3 +31,4 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+

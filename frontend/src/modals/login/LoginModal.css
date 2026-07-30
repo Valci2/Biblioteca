@@ -1,7 +1,4 @@
 /* src/modals/login/LoginModal.css */
-/* ============================================
-   LOGIN MODAL - Design System
-   ============================================ */
 
 /* ===== OVERLAY ===== */
 .modal-overlay {
@@ -120,14 +117,11 @@
   font-weight: 400;
 }
 
-/* ===== ERROR BANNER ===== */
+.success-banner,
 .error-banner {
-  background: #fef2f2;
-  color: #991b1b;
   padding: 12px 16px;
   border-radius: 8px;
   margin-bottom: 20px;
-  border: 1px solid #fecaca;
   text-align: center;
   font-size: 14px;
   display: flex;
@@ -137,6 +131,19 @@
   animation: shake 0.4s ease-out;
 }
 
+.success-banner {
+  background: #202d1f;
+  color: #86efac;
+  border: 1px solid #22c55e;
+}
+
+.error-banner {
+  background: #2d1f1f;
+  color: #fca5a5;
+  border: 1px solid #7f1d1d;
+}
+
+.success-banner::before,
 .error-banner::before {
   content: '⚠️';
   font-size: 16px;
@@ -345,6 +352,21 @@ input:focus {
   cursor: not-allowed;
 }
 
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+select {
+  background-color: #f1f5f9;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 15px;
+  outline: none;
+}
+
 /* ===== ANIMAÇÕES ===== */
 @keyframes fadeIn {
   from {
@@ -472,12 +494,6 @@ input:focus {
 
   .toggle-mode-btn::after {
     background: #60a5fa;
-  }
-
-  .error-banner {
-    background: #2d1f1f;
-    color: #fca5a5;
-    border-color: #7f1d1d;
   }
 
   .submit-btn {
