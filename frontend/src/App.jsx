@@ -9,7 +9,7 @@ function App() {
       <AuthProvider>
       <div className="App">
         <Navbar />
-        <div className="content" style={{ padding: '2rem' }}>
+        <div className="content">
           <AppRoutes />
         </div>
       </div>

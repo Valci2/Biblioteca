@@ -102,18 +102,9 @@
   align-items: center;
   gap: 8px;
   padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
   text-decoration: none;
   color: white;
   transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.btn-profile:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
-  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .btn-profile .username {
@@ -238,17 +229,6 @@
   .btn-login-nav:hover {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-  }
-
-  .btn-profile {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.05);
-    color: #e8f0fe;
-  }
-
-  .btn-profile:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.1);
   }
 
   .avatar-icon {

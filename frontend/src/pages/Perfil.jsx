@@ -107,81 +107,81 @@ const Perfil = () => {
   const isImageAvatar = avatar && (avatar.startsWith('data:image') || avatar.startsWith('http'));
 
   return (
-    <div className="perfil-container">
-      <div className="perfil-card">
-        {/* Avatar e Nome */}
-        <div className="perfil-top">
+    <div className="perfil-page-wrapper">
+
+      {/* Imagem de fundo */}
+      <div className="perfil-capa-fundo">
+        <div className="capa-overlay"></div>
+      </div>
+
+      {/* Conteúdo acima da imagem */}
+      <div className="perfil-container">
+        <div className="perfil-card">
           <div className="avatar-wrapper">
             {isImageAvatar ? (
-              <img 
-                src={avatar} 
-                alt={editData.nome} 
-                className="perfil-avatar"
-              />
-            ) : (
-              <div className="perfil-avatar-fallback">
-                {getInitials(editData.nome)}
-              </div>
-            )}
-            
-            {isEditing && (
-              <label className="avatar-upload">
-                <input 
-                  type="file" 
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  hidden
+                <img
+                    src={avatar}
+                    alt={editData.nome}
+                    className="perfil-avatar"
                 />
-                <span className="upload-icon">📷</span>
-              </label>
+            ) : (
+                <div className="perfil-avatar-fallback">
+                  {getInitials(editData.nome)}
+                </div>
+            )}
+            {isEditing && (
+                <label className="avatar-upload">
+                  <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      hidden
+                  />
+                  <span className="upload-icon">📷</span>
+                </label>
             )}
           </div>
-          
-          {!isEditing ? (
-            <div className="perfil-info">
-              <h1 className="perfil-nome">{user?.nome || 'Usuário'}</h1>
-              <p className="perfil-email">{user?.email || 'usuario@email.com'}</p>
-            </div>
-          ) : (
-            <div className="perfil-edit-form">
-              <input
-                type="text"
-                name="nome"
-                value={editData.nome}
-                onChange={handleChange}
-                placeholder="Nome completo"
-                className="edit-input"
-              />
-              <input
-                type="email"
-                name="email"
-                value={editData.email}
-                onChange={handleChange}
-                placeholder="Email"
-                className="edit-input"
-                disabled
-              />
-            </div>
-          )}
-        </div>
 
-        {/* Estatísticas de Livros */}
-        <div className="livros-stats">
-          <div className="stat-card comprados">
+          {/* Nome e email */}
+          {!isEditing ? (
+              <div className="perfil-info">
+                <h1 className="perfil-nome">{user?.nome || 'Usuário'}</h1>
+                <p className="perfil-email">{user?.email || 'usuario@email.com'}</p>
+              </div>
+          ) : (
+              <div className="perfil-edit-form">
+                <input
+                    type="text"
+                    name="nome"
+                    value={editData.nome}
+                    onChange={handleChange}
+                    placeholder="Nome completo"
+                    className="edit-input"
+                />
+                <input
+                    type="email"
+                    name="email"
+                    value={editData.email}
+                    onChange={handleChange}
+                    placeholder="Email"
+                    className="edit-input"
+                    disabled
+                />
+              </div>
+          )}
+
+          {/* Estatísticas de livros */}
+          <div className="livros-stats">
             <div className="stat-content">
               <span className="stat-value">{stats.livrosComprados}</span>
               <span className="stat-label">Comprados</span>
             </div>
-          </div>
-          
-          <div className="stat-card doados">
+
             <div className="stat-content">
               <span className="stat-value">{stats.livrosDoados}</span>
               <span className="stat-label">Doados</span>
             </div>
-          </div>
-          
-          <div className="stat-card vendidos">
+
             <div className="stat-content">
               <span className="stat-value">{stats.livrosVendidos}</span>
               <span className="stat-label">Vendidos</span>
@@ -189,9 +189,9 @@ const Perfil = () => {
           </div>
         </div>
 
-        {/* Ações do Perfil */}
-        <div className="perfil-actions">
-          {!isEditing ? (
+      {/* Ações do perfil */}
+      <div className="perfil-actions">
+        {!isEditing ? (
             <>
               <button onClick={handleEdit} className="btn-edit">
                 Editar Perfil
@@ -200,20 +200,20 @@ const Perfil = () => {
                 Sair
               </button>
             </>
-          ) : (
+        ) : (
             <>
               <button onClick={handleSave} className="btn-save">
                 Salvar
               </button>
-              <button 
-                onClick={() => setIsEditing(false)} 
-                className="btn-cancel"
+              <button
+                  onClick={() => setIsEditing(false)}
+                  className="btn-cancel"
               >
                 Cancelar
               </button>
             </>
-          )}
-        </div>
+        )}
+      </div>
       </div>
     </div>
   );

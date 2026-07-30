@@ -270,7 +270,7 @@ const Home = () => {
               className="clear-search"
               onClick={() => setSearchTerm('')}
             >
-              Limpar busca ✕
+              ✕ Limpar busca
             </button>
           )}
         </div>
@@ -335,29 +335,23 @@ const Home = () => {
                 
                 <div className="livro-meta">
                   <span className="livro-categoria">
-                    📂 {livro.categoria}
+                    {livro.categoria}
                   </span>
                   <span className="livro-status">
                     {livro.estoque > 0 ? (
-                      <span className="status-disponivel">✅ Disponível</span>
+                      <span className="status-disponivel">Disponível - {livro.estoque} unid.</span>
                     ) : (
-                      <span className="status-indisponivel">❌ Esgotado</span>
+                      <span className="status-indisponivel">Esgotado</span>
                     )}
                   </span>
                 </div>
-
-                {livro.estoque > 0 && (
-                  <div className="livro-estoque">
-                    <span>📦 {livro.estoque} unidades</span>
-                  </div>
-                )}
 
                 <div className="livro-preco">
                   R$ {livro.preco.toFixed(2)}
                 </div>
 
-                <Link 
-                  to={`/livro/${livro.id}`} 
+                <Link
+                  to={`/livro/${livro.id}`}
                   className="btn-detalhes"
                   onClick={(e) => e.stopPropagation()}
                 >
